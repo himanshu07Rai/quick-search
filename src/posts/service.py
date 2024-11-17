@@ -4,7 +4,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from .schema import PostSchema, PostCreateSchema
 from src.db.models import Post
 from src.db.main import es, create_index
-
+from src.utils import SortByEnum
 class PostService:
     async def get_posts_by_ids(self, post_ids: list[int], session:AsyncSession) -> list[PostSchema]:
         posts = []
@@ -39,7 +39,7 @@ class PostService:
             raise Exception(f"Error indexing post in Elasticsearch: {e}")
         return new_post
 
-    async def search_posts(self, query: str, session: AsyncSession) -> list[PostSchema]:
+    async def search_posts(self, query: str, sort_by:SortByEnum, session: AsyncSession) -> list[PostSchema]:
         try:
             response = await es.search(
                 index="posts",
@@ -57,6 +57,10 @@ class PostService:
             hits = response['hits']['hits']
             post_ids = [hit['_id'] for hit in hits]
             posts = await self.get_posts_by_ids(post_ids, session)
+            if sort_by == SortByEnum.likes:
+                posts = sorted(posts, key=lambda x: x.likes, reverse=True)
+            elif sort_by == SortByEnum.comments:
+                posts = sorted(posts, key=lambda x: x.comments, reverse=True)
             return posts
         except Exception as e:
             raise Exception(f"Error searching posts in Elasticsearch: {e}")
