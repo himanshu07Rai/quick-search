@@ -13,3 +13,6 @@ class PostSchema(PostCreateSchema):
     likes: int
     comments: int
     created_at: datetime
+    class Config:
+        # Add from_attributes=True to enable ORM compatibility with Pydantic
+        from_attributes = True

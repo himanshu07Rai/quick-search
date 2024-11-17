@@ -11,3 +11,8 @@ post_service = PostService()
 async def create_post(post: PostCreateSchema, session: AsyncSession = Depends(get_session)):
     new_post =  await post_service.create_post(post, session)
     return new_post
+
+@router.get('/search')
+async def search_posts(query: str, session: AsyncSession = Depends(get_session)):
+    posts = await post_service.search_posts(query, session)
+    return posts
