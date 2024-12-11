@@ -29,4 +29,11 @@ fastapi run src --reload
 - Access APIs : head to `http://0.0.0.0:8000/docs`
 
 
+#### Misc
+- curl -X DELETE "localhost:9200/posts?pretty"
+- alembic revision --autogenerate -m "update primary id field"
+
+
+
+
 

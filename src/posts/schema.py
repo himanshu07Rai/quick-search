@@ -7,7 +7,7 @@ class PostCreateSchema(BaseModel):
     content: str
 
 class PostSchema(PostCreateSchema):
-    id: uuid.UUID
+    id: int
     title: str 
     content: str
     likes: int

@@ -13,9 +13,20 @@ async def create_post(post: PostCreateSchema, session: AsyncSession = Depends(ge
     new_post =  await post_service.create_post(post, session)
     return new_post
 
+@router.get('/search_es')
+async def search_posts(query: str,
+                       sort_by: SortByEnum,
+                       session: AsyncSession = Depends(get_session)
+                       ):
+    posts = await post_service.search_es_posts(query, sort_by,session)
+    return posts
+
 @router.get('/search')
 async def search_posts(query: str,
                        sort_by: SortByEnum,
-                       session: AsyncSession = Depends(get_session)):
-    posts = await post_service.search_posts(query, sort_by,session)
+                       page_size: int,
+                       page_num: int,
+                       session: AsyncSession = Depends(get_session)
+                       ):
+    posts = await post_service.search_posts(query, sort_by,page_num, page_size,session)
     return posts
